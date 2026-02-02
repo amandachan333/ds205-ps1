@@ -1,0 +1,1 @@
+scraper must have: class, start, parsec
