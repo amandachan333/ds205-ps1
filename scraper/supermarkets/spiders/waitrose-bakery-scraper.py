@@ -128,7 +128,7 @@ class WaitroseBakerySeleniumScraper:
             except Exception as e:
                 print(f"  ✗ Error extracting product {idx}: {e}")
         
-        time.sleep(2)  # Be polite
+        time.sleep(2) 
     
     def extract_product_data(self, element):
         """Extract data from a single product element"""
@@ -136,7 +136,7 @@ class WaitroseBakerySeleniumScraper:
         # Product ID
         product_id = element.get_attribute('data-product-id')
         
-        # Product name (from your screenshot: span.name__STajL or similar)
+        # Product name
         name_elem = element.find_element(By.CSS_SELECTOR, 'span[class*="name"]')
         name = name_elem.text
         
