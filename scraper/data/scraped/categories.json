@@ -1,0 +1,16 @@
+{
+  "discovered_at": "2026-02-09T16:19:44.917966",
+  "total_categories": 2,
+  "categories": [
+    {
+      "name": "Fresh & Chilled",
+      "url": "https://www.waitrose.com/ecom/shop/browse/groceries/fresh_and_chilled",
+      "slug": "fresh_and_chilled"
+    },
+    {
+      "name": "Bakery",
+      "url": "https://www.waitrose.com/ecom/shop/browse/groceries/bakery",
+      "slug": "bakery"
+    }
+  ]
+}

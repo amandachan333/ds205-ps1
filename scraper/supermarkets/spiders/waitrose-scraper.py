@@ -446,7 +446,7 @@ class WaitroseScraper:
     
     def save_categories(self):
         """Save discovered categories to JSON"""
-        output_dir = Path(__file__).parent / 'data' / 'scraped'
+        output_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'scraped'
         output_dir.mkdir(parents=True, exist_ok=True)
         
         filepath = output_dir / 'categories.json'
@@ -461,7 +461,7 @@ class WaitroseScraper:
     
     def save_all_data(self):
         """Save all scraped data"""
-        output_dir = Path(__file__).parent / 'data' / 'scraped'
+        output_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'scraped'
         output_dir.mkdir(parents=True, exist_ok=True)
         
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
