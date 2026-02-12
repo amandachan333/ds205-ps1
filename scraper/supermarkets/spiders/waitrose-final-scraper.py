@@ -21,7 +21,7 @@ wait = WebDriverWait(driver, 15)
 
 print("Loading existing product URLs from your JSON file...")
 
-with open('scraper/data/scraped/waitrose_all_products_20260209_163435.json', 'r') as f:
+with open('../../../data/scraped/waitrose_all_products_20260209_163435.json', 'r') as f:
     old_data = json.load(f)
 
 product_urls = []
@@ -146,11 +146,11 @@ for idx, (product_id, url) in enumerate(product_urls, 1):
 
 driver.quit()
 
-output_dir = Path('data/scraped')
+output_dir = Path('../../../data/scraped')
 output_dir.mkdir(parents=True, exist_ok=True)
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-filepath = output_dir / f'waitrose_bakery_{timestamp}.jsonl'
+filepath = output_dir / f'waitrose_final_scraped_{timestamp}.jsonl'
 
 with open(filepath, 'w', encoding='utf-8') as f:
     for product in enriched_products:
