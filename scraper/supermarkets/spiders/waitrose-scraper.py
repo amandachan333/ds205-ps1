@@ -57,7 +57,7 @@ class WaitroseScraper:
         self.driver = webdriver.Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
         
-        print("â Chrome driver initialized")
+        print("Chrome driver initialized")
     
     def scrape_all(self):
         """Main scraping workflow"""
@@ -82,11 +82,11 @@ class WaitroseScraper:
             self.save_all_data()
             
         except Exception as e:
-            print(f"\nâ Fatal error: {e}")
+            print(f"\n✗ Fatal error: {e}")
             self.save_screenshot('fatal_error.png')
         finally:
             self.driver.quit()
-            print("\nâ Browser closed")
+            print("\n✓ Browser closed")
         
         return self.all_products
     
@@ -136,7 +136,7 @@ class WaitroseScraper:
                 except Exception as e:
                     continue
             
-            print(f"â Found {len(self.categories)} food categories:")
+            print(f"✓ Found {len(self.categories)} food categories:")
             for cat in self.categories:
                 print(f"  - {cat['name']}")
             
@@ -144,7 +144,7 @@ class WaitroseScraper:
             self.save_categories()
             
         except Exception as e:
-            print(f"â Error discovering categories: {e}")
+            print(f"✗  Error discovering categories: {e}")
             self.categories = [{'name': 'Bakery', 'url': f'{self.base_url}/ecom/shop/browse/groceries/bakery', 'slug': 'bakery'}]
     
     def is_food_category(self, name: str, url: str) -> bool:
@@ -175,7 +175,7 @@ class WaitroseScraper:
             self.handle_pagination(category['slug'])
             
         except Exception as e:
-            print(f"â Error scraping {category['name']}: {e}")
+            print(f"✗ Error scraping {category['name']}: {e}")
             self.save_screenshot(f"error_{category['slug']}.png")
     
     def wait_for_products(self):
@@ -184,9 +184,9 @@ class WaitroseScraper:
             self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'article[data-testid="product-pod"]'))
             )
-            print("â Products loaded")
+            print("✓ Products loaded")
         except TimeoutException:
-            print("â Timeout waiting for products")
+            print("✗ Timeout waiting for products")
     
     def scrape_current_page(self, category_slug: str):
         """Scrape all products visible on current page"""
@@ -205,7 +205,7 @@ class WaitroseScraper:
                     print(f"    {len(self.all_products)}. {product_data['name'][:60]}")
                 
             except Exception as e:
-                print(f"    â Error extracting product {idx}: {e}")
+                print(f"    ✗ Error extracting product {idx}: {e}")
         
         time.sleep(2)
     
@@ -331,7 +331,7 @@ class WaitroseScraper:
                 pass
             
         except Exception as e:
-            print(f"      â  Could not scrape details: {e}")
+            print(f"      ✗ Could not scrape details: {e}")
         
         return details
     
@@ -349,10 +349,10 @@ class WaitroseScraper:
                 load_more_button = self.find_load_more_button()
                 
                 if not load_more_button:
-                    print(f"  â No more items to load (clicked {load_count} times)")
+                    print(f"  ✓ No more items to load (clicked {load_count} times)")
                     break
                 
-                print(f"  â Clicking 'Load more' (attempt {load_count + 1})...")
+                print(f"  → Clicking 'Load more' (attempt {load_count + 1})...")
                 
                 # Scroll to button
                 self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", load_more_button)
@@ -377,7 +377,7 @@ class WaitroseScraper:
                 print(f"    Added {new_products} new products (total: {len(self.all_products)})")
                 
                 if new_products == 0:
-                    print(f"  â No new products loaded")
+                    print(f"  ✓ No new products loaded")
                     break
                 
                 # Scroll back to bottom
@@ -385,7 +385,7 @@ class WaitroseScraper:
                 time.sleep(2)
                 
             except Exception as e:
-                print(f"  â Error during pagination: {e}")
+                print(f"  ✗ Error during pagination: {e}")
                 break
     
     def find_load_more_button(self):
@@ -423,14 +423,14 @@ class WaitroseScraper:
         try:
             cookie_accept = self.driver.find_element(By.CSS_SELECTOR, 'button[data-testid="accept-all"]')
             if cookie_accept.is_displayed():
-                print("â Accepting cookies...")
+                print("✓ Accepting cookies...")
                 cookie_accept.click()
                 time.sleep(2)
         except:
             try:
                 cookie_accept = self.driver.find_element(By.XPATH, '//button[contains(text(), "Accept")]')
                 if cookie_accept.is_displayed():
-                    print("â Accepting cookies...")
+                    print("✓ Accepting cookies...")
                     cookie_accept.click()
                     time.sleep(2)
             except:
@@ -457,7 +457,7 @@ class WaitroseScraper:
                 'categories': self.categories
             }, f, indent=2, ensure_ascii=False)
         
-        print(f"â Categories saved to: {filepath}")
+        print(f"✓ Categories saved to: {filepath}")
     
     def save_all_data(self):
         """Save all scraped data"""
@@ -478,8 +478,8 @@ class WaitroseScraper:
             }, f, indent=2, ensure_ascii=False)
         
         print(f"\n{'='*70}")
-        print(f"â Scraped {len(self.all_products)} products from {len(set(p['category'] for p in self.all_products))} categories")
-        print(f"â Data saved to: {combined_file}")
+        print(f"✓ Scraped {len(self.all_products)} products from {len(set(p['category'] for p in self.all_products))} categories")
+        print(f"✓ Data saved to: {combined_file}")
         
         # Also save per-category files
         self.save_by_category(output_dir, timestamp)
@@ -513,7 +513,7 @@ class WaitroseScraper:
                     'products': products
                 }, f, indent=2, ensure_ascii=False)
         
-        print(f"â Per-category files saved to: {category_dir}")
+        print(f"✓ Per-category files saved to: {category_dir}")
     
     def print_summary(self):
         """Print scraping summary statistics"""
@@ -576,7 +576,7 @@ def main():
     # Run scraper
     products = scraper.scrape_all()
     
-    print(f"\nâ Scraping complete! Collected {len(products)} products.")
+    print(f"\n✓ Scraping complete! Collected {len(products)} products.")
     
     return products
 
