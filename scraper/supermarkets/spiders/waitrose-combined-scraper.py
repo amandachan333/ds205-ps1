@@ -12,13 +12,14 @@ from typing import Dict, Optional
 
 
 class WaitroseScraper:
-    """Scraper for Waitrose groceries collects product URLs from category
+    """Scraper for Waitrose groceries — collects product URLs from category
     pages then enriches each product via the __NEXT_DATA__ JSON embedded in
     individual product pages."""
 
-    NON_FOOD_CATEGORIES = {
-        'household', 'toiletries', 'health', 'beauty', 'baby', 'toddler',
-        'pet', 'valentine', 'occasion', 'brands', 'easter', 'pancake',
+    # Actual food categories on the Waitrose groceries page
+    FOOD_CATEGORY_SLUGS = {
+        'fresh_and_chilled', 'bakery', 'food_cupboard', 'frozen',
+        'beer_wine_and_spirits', 'tea_coffee_and_soft_drinks',
     }
 
     BASE_URL = "https://www.waitrose.com"
@@ -43,14 +44,14 @@ class WaitroseScraper:
 
         self.driver = webdriver.Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.driver, 15)
-        print("Chrome driver initialized")
+        print("✓ Chrome driver initialized")
 
     # ------------------------------------------------------------------
     # Main workflow
     # ------------------------------------------------------------------
 
     def scrape_all(self):
-        """Discover categories - collect product URLs - enrich each product."""
+        """Discover categories → collect product URLs → enrich each product."""
         print(f"\n{'='*60}")
         print("WAITROSE GROCERY SCRAPER")
         print(f"{'='*60}\n")
@@ -72,7 +73,7 @@ class WaitroseScraper:
                 product_stubs.extend(stubs)
                 time.sleep(3)
 
-            print(f"\nSaved {len(product_stubs)} unique product URLs")
+            print(f"\n✓ Collected {len(product_stubs)} unique product URLs")
 
             # Phase 2: visit each product page and extract data from __NEXT_DATA__
             # Open output file now so each product is saved immediately
@@ -108,10 +109,10 @@ class WaitroseScraper:
             self.print_summary()
 
         except Exception as e:
-            print(f"\nFatal error: {e}")
+            print(f"\n✗ Fatal error: {e}")
         finally:
             self.driver.quit()
-            print("\nBrowser closed")
+            print("\n✓ Browser closed")
 
         return self.all_products
 
@@ -156,12 +157,12 @@ class WaitroseScraper:
                 except NoSuchElementException:
                     continue
 
-            print(f"Found {len(self.categories)} food categories:")
+            print(f"✓ Found {len(self.categories)} food categories:")
             for c in self.categories:
                 print(f"  - {c['name']}")
 
         except (TimeoutException, Exception) as e:
-            print(f"Error discovering categories: {e}")
+            print(f"✗ Error discovering categories: {e}")
             self.categories = [{
                 'name': 'Bakery',
                 'url': f'{self.BASE_URL}/ecom/shop/browse/groceries/bakery',
@@ -169,8 +170,8 @@ class WaitroseScraper:
             }]
 
     def _is_food(self, name: str, url: str) -> bool:
-        combined = (name + url).lower()
-        return not any(kw in combined for kw in self.NON_FOOD_CATEGORIES)
+        slug = url.rstrip('/').split('/')[-1]
+        return slug in self.FOOD_CATEGORY_SLUGS
 
     # ------------------------------------------------------------------
     # Phase 1: collect product URLs from category listing pages
@@ -178,7 +179,7 @@ class WaitroseScraper:
 
     def collect_product_urls(self, category: Dict) -> list:
         """Load a category page and return product stubs.
-        Always checks for subcategory links first if they exist, drill
+        Always checks for subcategory links first — if they exist, drill
         into each one (handles hybrid pages like bakery that show some
         products AND have subcategory navigation). Falls back to
         paginating the current page only if no subcategories are found."""
@@ -193,17 +194,17 @@ class WaitroseScraper:
             if subcats:
                 print(f"  → Found {len(subcats)} subcategories, drilling in...")
                 for sub in subcats:
-                    print(f"    → {sub['name']}")
+                    print(f"    ↳ {sub['name']}")
                     stubs.extend(self.collect_product_urls(sub))
                     time.sleep(2)
             else:
-                # Leaf category - scrape products and paginate
+                # Leaf category — scrape products and paginate
                 self._wait_for_products()
                 stubs.extend(self._extract_stubs(category['slug']))
                 stubs.extend(self._paginate_and_collect(category['slug']))
 
         except Exception as e:
-            print(f"Error listing {category['name']}: {e}")
+            print(f"  ✗ Error listing {category['name']}: {e}")
         return stubs
 
     def _discover_subcategories(self, parent_url: str) -> list:
@@ -286,7 +287,7 @@ class WaitroseScraper:
         for attempt in range(100):
             btn = self._find_load_more()
             if not btn:
-                print(f"  ✗ No more items (clicked {attempt} times)")
+                print(f"  ✓ No more items (clicked {attempt} times)")
                 break
 
             self.driver.execute_script(
@@ -435,7 +436,7 @@ class WaitroseScraper:
         with_barcode = sum(1 for p in self.all_products if p.get('barcode'))
 
         print(f"\n{'='*60}")
-        print(f"Saved {total} products to: {self.output_path}")
+        print(f"✓ Saved {total} products to: {self.output_path}")
         print(f"  With barcode: {with_barcode}/{total}")
         print(f"{'='*60}")
 
@@ -445,7 +446,7 @@ class WaitroseScraper:
 def main():
     scraper = WaitroseScraper(headless=False, max_categories=2)
     products = scraper.scrape_all()
-    print(f"\n Done {len(products)} products collected.")
+    print(f"\n✓ Done — {len(products)} products collected.")
     return products
 
 
