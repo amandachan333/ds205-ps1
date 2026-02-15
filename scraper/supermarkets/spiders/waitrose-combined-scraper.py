@@ -161,7 +161,7 @@ class WaitroseScraper:
             for c in self.categories:
                 print(f"  - {c['name']}")
 
-        except (TimeoutException, Exception) as e:
+        except Exception as e:
             print(f"✗ Error discovering categories: {e}")
             self.categories = [{
                 'name': 'Bakery',
@@ -397,7 +397,7 @@ class WaitroseScraper:
                 'scraped_at': datetime.now().isoformat(),
             }
 
-        except Exception as e:
+        except (json.JSONDecodeError, KeyError, TimeoutException) as e:
             print(f"Error: {str(e)[:40]}", end=" ")
             return None
 
