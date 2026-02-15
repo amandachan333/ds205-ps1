@@ -5,18 +5,21 @@
 
 **Note:** This is a student repository for DS205 Problem Set 1. See the [assignment page](https://lse-dsi.github.io/DS205/2025-2026/winter-term/assessments/problem-set-1.html) for full instructions.
 
-**AUTHOR:** [YOUR NAME](https://github.com/<your-github-username>)
+**AUTHOR:** [Amanda Chan](https://github.com/<amandachan333>)
 
 ## Project Structure
 
 ```
-├── scraper/           # Your web scraper (Part A)
-│   └── README.md
-├── api/               # Your FastAPI application (Part B)
+├── scraper/                        # Part A: Waitrose web scraper
+│   ├── README.md                   # Scraper documentation
+│   └── supermarkets/
+│       └── spiders/
+│           └── waitrose_scraper.py # Main scraper script
+├── api/                            # Part B: FastAPI application
 │   └── README.md
 ├── data/
-│   ├── raw/           # Scraped data
-│   └── processed/     # Enriched data with NOVA classifications
+│   ├── scraped/                    # Scraper output (JSONL)
+│   └── enriched/                   # API output (products + NOVA data)
 ├── environment.yml
 ├── CONTRIBUTING.md
 └── README.md
