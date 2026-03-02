@@ -49,6 +49,17 @@ python run_pipeline.py serve
 | `GET /products/{id}` | Get a single product by Waitrose product ID (404 if not found) |
 | `GET /stats` | NOVA classification counts, enrichment rate, and UPF proportion |
 
+## Running Tests
+
+5 pytest tests cover the core API behaviour (product listing, filtering, single product lookup, 404 handling, and stats shape).
+
+From the project root:
+```bash
+PYTHONPATH=. pytest api/test_api.py -v
+```
+
+All tests use FastAPI's `TestClient` and run against the enriched data loaded at startup — no server needs to be running.
+
 ## Architecture Decisions
 
 **Why pre-enrichment?** OpenFoodFacts is slow (~1s/request). Enrichment runs once; the API serves from local data.
