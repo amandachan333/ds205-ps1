@@ -3,28 +3,23 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  # Core
-  - python>=3.11
-  - ipykernel
-  - ipython
+  - python=3.12
+  - pip
+  - pip:
+    # Data collection (Part A: Scraper)
+    - selenium>=4.15.0
 
-  # Data collection (Part A: Scraper)
-  - requests>=2.32
-  - scrapy>=2.12
-  - selenium>=4.25
+    # Data manipulation
+    - pandas>=2.0.0
 
-  # Data manipulation (Both)
-  - numpy>=1.26
-  - pandas>=2.1
+    # API development (Part B)
+    - fastapi>=0.128.0
+    - uvicorn>=0.24.0
+    - pydantic>=2.0.0
+    - requests>=2.31.0
 
-  # API development (Part B: API)
-  - fastapi>=0.115
-  - pydantic>=2.9
-  - uvicorn>=0.30
-  - httpx>=0.27
+    # Fuzzy matching (Part B: NOVA enrichment)
+    - thefuzz>=0.22.0
 
-  # Pipeline orchestration (Part B)
-  - click>=8.1
-
-  # Testing (Both)
-  - pytest>=8.0
+    # Testing
+    - pytest>=7.4.0
